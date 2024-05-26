@@ -1,0 +1,36 @@
+Pré-requisitos:
+    .Net 8
+    docker desktop
+    visual studio ou visual studio code
+
+Comandos:
+    Instalação da carga de trabalho do .Net Aspire (SDK do .Net Aspire)
+        dotnet workload install aspire
+
+Duas formas de criação de um projeto:
+    .Net Aspire Aplication: Somente os dois projetos básicos do .Net Aspire (AppHost e ServiceDefaults)
+        dotnet new aspire --use-redis-cache --output DotnetAspireBasico
+    .Net Aspire Starter Aplication: Os dois projetos básicos do .Net Aspire (AppHost e ServiceDefaults) e mais dois projetos de exemplo (ApiService e Web)        
+        dotnet new aspire-starter --use-redis-cache --output . --name AspireBasico
+
+Execução do dashboard:
+    Entre na pasta onde se encontra o projeto AspireStarterBasico.AppHost
+    Execute o comando: dotnet run
+    Nas infos geradas, você irá encontrar a url para entrar, que já inclui o token de autenticação
+    Caso tenha problema com certificados, utilizeo comando: dotnet dev-certs https --trust
+
+Criar um MinimalAPI:
+    Entre na pasta microsserviço e crie o projeto:
+        dotnet new web -o AspireBasico.MinimalApiService
+
+Adicionar o projeto
+    Vá no projeto .AppHost e adicione:
+        No arquivo .csproj a referência para o projeto criado:            
+            <ProjectReference Include="..\AspireBasico.MinimalApiService\AspireBasico.MinimalApiService.csproj" />
+        No Program.cs adicione o projeto:
+            builder.AddProject<Projects.AspireBasico_MinimalApiService>("minimalApiService");
+    Vá no projeto criado e adicione:
+        A dependência para o projeto .ServiceDefaults:
+            <ProjectReference Include="..\AspireBasico.ServiceDefaults\AspireBasico.ServiceDefaults.csproj" />
+        No Program.cs a adição do servico do aspire:
+            builder.AddServiceDefaults();
